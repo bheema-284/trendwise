@@ -8,7 +8,7 @@ const Article = () => {
   const BASE_URL = process.env.API_URL;
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/articles/${slug}`)
+    axios.get(`${BASE_URL}/api/articles/${slug}`)
       .then(res => setArticle(res.data))
       .catch(err => {
         console.error('Failed to fetch article:', err);
