@@ -9,7 +9,12 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
+const allowedOrigins = [
+  'http://localhost:10000',
+  'http://localhost:5173',
+  "https://trendwise-beta.vercel.app/",
+  'https://your-frontend-app.onrender.com'
+];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -27,5 +32,5 @@ app.use(express.json());
 
 app.use('/api', articleRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

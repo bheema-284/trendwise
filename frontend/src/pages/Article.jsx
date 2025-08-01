@@ -8,7 +8,7 @@ const Article = () => {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/articles/${slug}`)
+    axios.get(`http://localhost:10000/api/articles/${slug}`)
       .then(res => setArticle(res.data))
       .catch(err => {
         console.error('Failed to fetch article:', err);
