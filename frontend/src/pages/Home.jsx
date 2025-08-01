@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+const BASE_URL = process.env.API_URL;
 const Home = () => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:10000/api/articles')
+    axios.get(`${BASE_URL}/articles`)
       .then(res => setArticles(res.data));
   }, []);
 

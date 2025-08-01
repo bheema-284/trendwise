@@ -4,11 +4,11 @@ import axios from 'axios';
 
 const Article = () => {
   const { slug } = useParams();
-  console.log("slug", slug)
   const [article, setArticle] = useState(null);
+  const BASE_URL = process.env.API_URL;
 
   useEffect(() => {
-    axios.get(`http://localhost:10000/api/articles/${slug}`)
+    axios.get(`${BASE_URL}/articles/${slug}`)
       .then(res => setArticle(res.data))
       .catch(err => {
         console.error('Failed to fetch article:', err);
