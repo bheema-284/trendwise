@@ -1,0 +1,1 @@
+import React from 'react'; const Login = () => <div>Login Page (Google OAuth)</div>; export default Login;
