@@ -5,19 +5,39 @@ import cors from 'cors';
 import articleRoutes from './routes/articleRoutes.js';
 
 dotenv.config();
-connectDB();
+
+connectDB().catch(err => {
+    console.error('DB Connection Failed:', err);
+});
 
 const app = express();
 
-// Recommended: Relax CORS for now (during dev)
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://trendwise-beta.vercel.app',
+    'https://your-frontend-app.onrender.com'
+];
+
 app.use(cors({
-  origin: true,
-  credentials: true,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
 }));
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send('Hello from Render!');
+});
+
 app.use('/api', articleRoutes);
 
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT; // <-- Don't default to custom port
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
