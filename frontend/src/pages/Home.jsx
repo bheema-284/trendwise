@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-const BASE_URL = process.env.API_URL;
 const Home = () => {
   const [articles, setArticles] = useState([]);
+  const BASE_URL = "https://trendwise-p440.onrender.com";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/api/articles`)
