@@ -750,32 +750,68 @@ function App() {
   const { pathname } = useLocation();
   const [loadingParams, setLoadingParams] = useState(true);
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const name = params.get('name');
-    const email = params.get('email');
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token');
+  const name = params.get('name');
+  const email = params.get('email');
 
-    const fromQuery = token && name && email;
+  const fromQuery = token && name && email;
 
-    const loadFromLocalStorage = () => {
-      try {
-        const storedUser = JSON.parse(localStorage.getItem("user_details"));
-        const storedToken = localStorage.getItem("auth_token");
+  const loadFromLocalStorage = () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user_details"));
+      const storedToken = localStorage.getItem("auth_token");
 
-        if (storedUser && storedToken && storedUser.token === storedToken) {
-          setRootContext(prev => ({
-            ...prev,
-            authenticated: true,
-            user: storedUser,
-            accessToken: storedToken,
-            loader: false,
-          }));
-          return true;
-        }
-      } catch (err) {
-        console.error("Invalid localStorage data:", err);
+      if (storedUser && storedToken && storedUser.token === storedToken) {
+        setRootContext(prev => ({
+          ...prev,
+          authenticated: true,
+          user: storedUser,
+          accessToken: storedToken,
+          loader: false,
+        }));
+        return true;
       }
+    } catch (err) {
+      console.error("Invalid localStorage data:", err);
+    }
 
+    localStorage.clear();
+    setRootContext(prev => ({
+      ...prev,
+      authenticated: false,
+      user: null,
+      accessToken: '',
+      loader: false,
+    }));
+    return false;
+  };
+
+  const saveFromQueryParams = () => {
+    const userDetails = {
+      name: decodeURIComponent(name),
+      email: decodeURIComponent(email),
+      token,
+      isAdmin: true,
+    };
+
+    try {
+      localStorage.setItem("user_details", JSON.stringify(userDetails));
+      localStorage.setItem("auth_token", token);
+
+      setRootContext(prev => ({
+        ...prev,
+        authenticated: true,
+        user: userDetails,
+        accessToken: token,
+        loader: false,
+      }));
+
+      console.log("User authenticated via URL params. Cleaning URL...");
+      navigate('/admin', { replace: true });
+      return true;
+    } catch (err) {
+      console.error("Error saving user from URL params:", err);
       localStorage.clear();
       setRootContext(prev => ({
         ...prev,
@@ -785,54 +821,18 @@ function App() {
         loader: false,
       }));
       return false;
-    };
-
-    const saveFromQueryParams = () => {
-      const userDetails = {
-        name: decodeURIComponent(name),
-        email: decodeURIComponent(email),
-        token,
-        isAdmin: true,
-      };
-
-      try {
-        localStorage.setItem("user_details", JSON.stringify(userDetails));
-        localStorage.setItem("auth_token", token);
-
-        setRootContext(prev => ({
-          ...prev,
-          authenticated: true,
-          user: userDetails,
-          accessToken: token,
-          loader: false,
-        }));
-
-        console.log("User authenticated via URL params. Cleaning URL...");
-        navigate('/admin', { replace: true });
-        return true;
-      } catch (err) {
-        console.error("Error saving user from URL params:", err);
-        localStorage.clear();
-        setRootContext(prev => ({
-          ...prev,
-          authenticated: false,
-          user: null,
-          accessToken: '',
-          loader: false,
-        }));
-        return false;
-      }
-    };
-
-    const authenticated = fromQuery ? saveFromQueryParams() : loadFromLocalStorage();
-
-    if (!authenticated) {
-      console.warn("User not authenticated. Redirecting to login...");
-      navigate('/login');
     }
+  };
 
-    setLoadingParams(false);
-  }, [location.search, pathname, navigate, setRootContext]);
+  const authenticated = fromQuery ? saveFromQueryParams() : loadFromLocalStorage();
+
+  if (!authenticated) {
+    console.warn("User not authenticated. Redirecting to login...");
+    navigate('/login');
+  }
+
+  setLoadingParams(false);
+}, [location.search, pathname, navigate, setRootContext]);
 
 
 
@@ -975,7 +975,7 @@ function App() {
       </div>
     );
   }
-
+ 
   return (
     <RootContext.Provider value={{ rootContext, setRootContext }}>
       <div className="antialiased">
@@ -986,9 +986,9 @@ function App() {
           )}
           <main className={`flex-1 p-1 w-full ${rootContext.authenticated ? 'sm:ml-36' : ''}`}>
             {rootContext.authenticated && <Topbar />}
-            <Routes>
-              {/* Always register public routes */}
-              <Route path="/login" element={<Login />} />
+            <Routes >
+              {/* Public routes */}
+              {!rootContext.authenticated && !rootContext.loader && <Route path="/login" element={<Login />} />}
 
               {/* Protected routes */}
               {rootContext.authenticated && (
@@ -1001,9 +1001,6 @@ function App() {
                   <Route path="/settings" element={<SettingsPage />} />
                 </>
               )}
-
-              {/* Optional: Redirect all other routes */}
-              <Route path="*" element={<Navigate to={rootContext.authenticated ? "/" : "/login"} replace />} />
             </Routes>
             <Toast />
           </main>
