@@ -115,21 +115,3 @@ input[type="search"] {
     @apply absolute -top-2 left-2 -mt-px inline-block px-1 bg-white text-xs font-medium text-gray-900 text-[1rem];
   }
 }
-
-/* Scrollbar track */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-/* Scrollbar thumb (the part you drag) */
-::-webkit-scrollbar-thumb {
-  background-color: #F47C26;
-  border-radius: 4px;
-}
-
-/* Scrollbar track background */
-::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-}
-
