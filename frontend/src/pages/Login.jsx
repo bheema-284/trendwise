@@ -9,6 +9,7 @@ import { useState } from 'react';
 
 const Login = () => {
     const { rootContext, setRootContext } = useContext(RootContext);
+    const BASE_URL = import.meta.env.VITE_API_URL;
     const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ const Login = () => {
         setFormData(updatedformData);
     };
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:10000/auth/google'; // Change to deployed URL in production
+        window.location.href = `${BASE_URL}/auth/google`; // Change to deployed URL in production
     };
 
     const onSave = (e) => {
