@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AdminArticleForm = () => {
     const [mode, setMode] = useState('manual'); // 'manual' or 'generate'
@@ -16,6 +17,7 @@ const AdminArticleForm = () => {
             [e.target.name]: e.target.value
         });
     };
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,6 +40,7 @@ const AdminArticleForm = () => {
                 setMessage('✅ Article generated!');
                 setPrompt('');
             }
+            navigate("/articles")
         } catch (err) {
             console.error(err);
             setMessage('❌ Failed to submit. Check permissions or input.');

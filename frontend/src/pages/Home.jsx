@@ -77,7 +77,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 font-inter">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full mx-auto">
         <h1 className="text-4xl font-extrabold text-center text-gray-900 dark:text-white mb-10 leading-tight">
           TrendWise: Discover What's Trending
         </h1>
@@ -87,7 +87,7 @@ const Home = () => {
             No articles found. Check back later!
           </div>
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-3">
             {articles.map((article) => (
               <div
                 key={article._id}
