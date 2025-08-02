@@ -3,13 +3,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavig
 import Home from './pages/Home';
 import Article from './pages/Article';
 import Login from './pages/Login';
-import AdminDashboard from './pages/Admin'; // Changed to AdminDashboard for consistency
+import AdminDashboard from './pages/Dashboard'; // Changed to AdminDashboard for consistency
 import RootContext from './config/rootcontext';
 import { BellAlertIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/24/solid';
 import { FaThLarge, FaSuitcase, FaCalendarAlt, FaCog, FaBell } from "react-icons/fa"; // Simplified imports
 import Calendar from './pages/Calendar';
 import SettingsPage from './pages/Settings';
 import Toast from './pages/toast';
+import Dashboard from './pages/Dashboard';
+import AdminArticleForm from './pages/Admin';
 
 function App() {
   const location = useLocation();
@@ -750,68 +752,32 @@ function App() {
   const { pathname } = useLocation();
   const [loadingParams, setLoadingParams] = useState(true);
   useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const token = params.get('token');
-  const name = params.get('name');
-  const email = params.get('email');
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    const name = params.get('name');
+    const email = params.get('email');
 
-  const fromQuery = token && name && email;
+    const fromQuery = token && name && email;
 
-  const loadFromLocalStorage = () => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user_details"));
-      const storedToken = localStorage.getItem("auth_token");
+    const loadFromLocalStorage = () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem("user_details"));
+        const storedToken = localStorage.getItem("auth_token");
 
-      if (storedUser && storedToken && storedUser.token === storedToken) {
-        setRootContext(prev => ({
-          ...prev,
-          authenticated: true,
-          user: storedUser,
-          accessToken: storedToken,
-          loader: false,
-        }));
-        return true;
+        if (storedUser && storedToken && storedUser.token === storedToken) {
+          setRootContext(prev => ({
+            ...prev,
+            authenticated: true,
+            user: storedUser,
+            accessToken: storedToken,
+            loader: false,
+          }));
+          return true;
+        }
+      } catch (err) {
+        console.error("Invalid localStorage data:", err);
       }
-    } catch (err) {
-      console.error("Invalid localStorage data:", err);
-    }
 
-    localStorage.clear();
-    setRootContext(prev => ({
-      ...prev,
-      authenticated: false,
-      user: null,
-      accessToken: '',
-      loader: false,
-    }));
-    return false;
-  };
-
-  const saveFromQueryParams = () => {
-    const userDetails = {
-      name: decodeURIComponent(name),
-      email: decodeURIComponent(email),
-      token,
-      isAdmin: true,
-    };
-
-    try {
-      localStorage.setItem("user_details", JSON.stringify(userDetails));
-      localStorage.setItem("auth_token", token);
-
-      setRootContext(prev => ({
-        ...prev,
-        authenticated: true,
-        user: userDetails,
-        accessToken: token,
-        loader: false,
-      }));
-
-      console.log("User authenticated via URL params. Cleaning URL...");
-      navigate('/admin', { replace: true });
-      return true;
-    } catch (err) {
-      console.error("Error saving user from URL params:", err);
       localStorage.clear();
       setRootContext(prev => ({
         ...prev,
@@ -821,18 +787,54 @@ function App() {
         loader: false,
       }));
       return false;
+    };
+
+    const saveFromQueryParams = () => {
+      const userDetails = {
+        name: decodeURIComponent(name),
+        email: decodeURIComponent(email),
+        token,
+        isAdmin: true,
+      };
+
+      try {
+        localStorage.setItem("user_details", JSON.stringify(userDetails));
+        localStorage.setItem("auth_token", token);
+
+        setRootContext(prev => ({
+          ...prev,
+          authenticated: true,
+          user: userDetails,
+          accessToken: token,
+          loader: false,
+        }));
+
+        console.log("User authenticated via URL params. Cleaning URL...");
+        navigate('/admin', { replace: true });
+        return true;
+      } catch (err) {
+        console.error("Error saving user from URL params:", err);
+        localStorage.clear();
+        setRootContext(prev => ({
+          ...prev,
+          authenticated: false,
+          user: null,
+          accessToken: '',
+          loader: false,
+        }));
+        return false;
+      }
+    };
+
+    const authenticated = fromQuery ? saveFromQueryParams() : loadFromLocalStorage();
+
+    if (!authenticated) {
+      console.warn("User not authenticated. Redirecting to login...");
+      navigate('/login');
     }
-  };
 
-  const authenticated = fromQuery ? saveFromQueryParams() : loadFromLocalStorage();
-
-  if (!authenticated) {
-    console.warn("User not authenticated. Redirecting to login...");
-    navigate('/login');
-  }
-
-  setLoadingParams(false);
-}, [location.search, pathname, navigate, setRootContext]);
+    setLoadingParams(false);
+  }, [location.search, pathname, navigate, setRootContext]);
 
 
 
@@ -858,7 +860,7 @@ function App() {
   };
 
   const sidebarItems = [
-    { icon: <FaThLarge />, label: "Dashboard", link: "/admin" }, // Assuming /admin is the dashboard
+    { icon: <FaThLarge />, label: "Admin Dashboard", link: "/admin" }, // Assuming /admin is the dashboard
     { icon: <FaSuitcase />, label: "Articles", link: "/articles" },
     { icon: <FaCalendarAlt />, label: "Calendar", link: "/calendar" },
     { icon: <FaCog />, label: "Settings", link: "/settings" },
@@ -975,7 +977,7 @@ function App() {
       </div>
     );
   }
- 
+
   return (
     <RootContext.Provider value={{ rootContext, setRootContext }}>
       <div className="antialiased">
@@ -993,10 +995,10 @@ function App() {
               {/* Protected routes */}
               {rootContext.authenticated && (
                 <>
-                  <Route path="/" element={<AdminDashboard />} />
+                  <Route path="/" element={<Dashboard />} />
                   <Route path="/article/:slug" element={<Article />} />
                   <Route path="/articles" element={<Home />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin" element={<AdminArticleForm />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </>
