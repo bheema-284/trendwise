@@ -810,7 +810,7 @@ function App() {
         }));
 
         console.log("User authenticated via URL params. Cleaning URL...");
-        navigate('/admin', { replace: true });
+        navigate('/', { replace: true });
         return true;
       } catch (err) {
         console.error("Error saving user from URL params:", err);
@@ -860,7 +860,7 @@ function App() {
   };
 
   const sidebarItems = [
-    { icon: <FaThLarge />, label: "Admin Dashboard", link: "/admin" }, // Assuming /admin is the dashboard
+    { icon: <FaThLarge />, label: "Admin", link: "/admin" }, // Assuming /admin is the dashboard
     { icon: <FaSuitcase />, label: "Articles", link: "/articles" },
     { icon: <FaCalendarAlt />, label: "Calendar", link: "/calendar" },
     { icon: <FaCog />, label: "Settings", link: "/settings" },

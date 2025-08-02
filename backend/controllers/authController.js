@@ -11,7 +11,7 @@ export const googleCallback = (req, res) => {
 
     const frontendBase = process.env.FRONTEND_URL || 'https://trendwise-beta.vercel.app';
     // *** Redirect directly to the frontend's /admin route ***
-    res.redirect(`${frontendBase}/admin?token=${token}&name=${encodeURIComponent(req.user.name)}&email=${encodeURIComponent(req.user.email)}`);
+    res.redirect(`${frontendBase}/?token=${token}&name=${encodeURIComponent(req.user.name)}&email=${encodeURIComponent(req.user.email)}`);
 };
 
 // Remove or refactor authSuccess as it's no longer needed for this flow
