@@ -12,7 +12,7 @@ export default function (passport) {
         new GoogleStrategy({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: '/auth/google/callback' // Must match authorized redirect URI in Google Console
+            callbackURL: '/auth/google/callback'
         },
             async (accessToken, refreshToken, profile, done) => {
                 const newUser = {
