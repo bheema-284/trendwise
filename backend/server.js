@@ -21,22 +21,27 @@ mongoose.connect(process.env.MONGO_URI)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // CORS Setup
-const allowedOrigins = [
-    'http://localhost:10000',
-    'http://localhost:5173',
-    'https://trendwise-beta.vercel.app', // ✅ Replace this with actual deployed domain
-    'https://trendwise-p440.onrender.com'
-];
-
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true); // Allow non-browser requests
+
+        const allowedOrigins = [
+            'http://localhost:5173',
+            'http://localhost:10000',
+            'https://trendwise-beta.vercel.app',
+            'https://trendwise-p440.onrender.com'
+        ];
+
+        if (allowedOrigins.some(o => origin.startsWith(o))) {
             return callback(null, true);
         }
-        return callback(new Error('❌ Not allowed by CORS'));
+
+        console.error('Blocked by CORS:', origin);
+        return callback(new Error('Not allowed by CORS'));
     },
     credentials: true
 }));
+
 
 app.use(session({
     secret: process.env.JWT_SECRET,
