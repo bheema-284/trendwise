@@ -52,7 +52,7 @@ const Login = () => {
         setFormData(updatedformData);
     };
     const handleGoogleLogin = () => {
-        window.location.href = 'http://trendwise-p440.onrender.com/auth/google'; // Change to deployed URL in production
+        window.location.href = 'http://localhost:10000/auth/google'; // Change to deployed URL in production
     };
 
     const onSave = (e) => {
