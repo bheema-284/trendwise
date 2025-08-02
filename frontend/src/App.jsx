@@ -746,8 +746,7 @@ function App() {
           description: 'Description for ETC Feedback Session',
           id: 'job-1753599000015-b7c8d9e'
         }
-      ],
-      notification: false,
+      ]
     };
   });
   const { pathname } = useLocation();
