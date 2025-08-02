@@ -87,7 +87,7 @@ export default function MonthView({ date, events, categoryColors }) {
       days.push(
         <div
           className={`border border-gray-200 p-1 h-28 text-xs align-top relative flex flex-col ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : 'bg-white'}
-                     ${isTodayDate ? 'border-yellow-500 ring-1 ring-yellow-500' : ''}
+                     ${isTodayDate ? 'border-blue-500 ring-1 ring-blue-500' : ''}
                     `}
           key={formattedDate}
         >

@@ -81,7 +81,7 @@ export default function Sidebar({ filters, setFilters, onAdd, categoryColors }) 
             <div className='px-4 pt-1.5'>
                 <button
                     onClick={onAdd}
-                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded shadow"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded shadow"
                 >
                     + Add Event
                 </button>
@@ -152,9 +152,9 @@ export default function Sidebar({ filters, setFilters, onAdd, categoryColors }) 
                             key={i}
                             onClick={() => setSelectedDate(day)}
                             className={`w-7 h-7 text-center leading-7 rounded cursor-pointer
-    ${isToday(day) ? 'bg-yellow-100 hover:bg-yellow-100 text-gray-800 font-bold' : ''}
+    ${isToday(day) ? 'bg-blue-100 hover:bg-blue-100 text-gray-800 font-bold' : ''}
     ${isSameMonth(day, currentDate) ? 'text-gray-700' : 'text-gray-300'}
-    ${format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd') ? 'bg-yellow-300 hover:bg-yellow-300' : ''}
+    ${format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd') ? 'bg-blue-300 hover:bg-blue-300' : ''}
     hover:bg-gray-200`}
                         >
                             {format(day, 'd')}

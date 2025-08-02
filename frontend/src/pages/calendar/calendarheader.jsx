@@ -34,8 +34,8 @@ export default function CalendarHeader({
                         onClick={() => setView(v)}
                         className={`
                     px-3 py-1 text-sm font-medium relative focus:outline-none focus:z-10
-                   ${view === v ? 'bg-yellow-600 text-white' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'}
-                  ${view === v ? 'border-yellow-600' : 'border-yellow-400'}
+                   ${view === v ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}
+                  ${view === v ? 'border-blue-600' : 'border-blue-400'}
                     border-y border-l 
                     ${index === listData.length - 1 ? 'border-r' : ''} 
                     ${index === 0 ? 'rounded-l-md' : ''} 

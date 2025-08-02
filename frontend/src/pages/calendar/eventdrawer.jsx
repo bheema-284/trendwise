@@ -121,12 +121,12 @@ export default function EventDrawer({ show, onClose, onSave, categories, editDat
 
                                     <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-sm shadow-lg ring-1 ring-gray-50 ring-opacity-5 focus:outline-none">
                                         {allCategories.map((cat, idx) => (
-                                            <Listbox.Option key={idx} value={cat} className={({ active }) => `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-yellow-100 text-yellow-900' : 'text-gray-900'}`}>
+                                            <Listbox.Option key={idx} value={cat} className={({ active }) => `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`}>
                                                 {({ selected }) => (
                                                     <>
                                                         <span className="absolute left-2 top-2 h-3 w-3 rounded-full" style={{ backgroundColor: categoryColors[cat] }} />
                                                         <span className={selected ? 'font-medium' : 'font-normal'}>{cat}</span>
-                                                        {selected && <span className="absolute inset-y-0 right-2 flex items-center pl-3 text-yellow-600"><CheckIcon className="h-5 w-5" /></span>}
+                                                        {selected && <span className="absolute inset-y-0 right-2 flex items-center pl-3 text-blue-600"><CheckIcon className="h-5 w-5" /></span>}
                                                     </>
                                                 )}
                                             </Listbox.Option>
@@ -155,7 +155,7 @@ export default function EventDrawer({ show, onClose, onSave, categories, editDat
                     <Switch
                         checked={form.allDay}
                         onChange={(val) => setForm((prev) => ({ ...prev, allDay: val }))}
-                        className={`${form.allDay ? 'bg-yellow-500' : 'bg-gray-200'} relative inline-flex h-5 w-10 items-center rounded-full`}
+                        className={`${form.allDay ? 'bg-blue-500' : 'bg-gray-200'} relative inline-flex h-5 w-10 items-center rounded-full`}
                     >
                         <span className={`${form.allDay ? 'translate-x-5' : 'translate-x-1'} inline-block h-3 w-3 transform rounded-full bg-white transition`} />
                     </Switch>
@@ -181,7 +181,7 @@ export default function EventDrawer({ show, onClose, onSave, categories, editDat
 
                 {/* Submit / Cancel */}
                 <div className="flex justify-end gap-2 pt-4">
-                    <button type="submit" className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded">Submit</button>
+                    <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">Submit</button>
                     <button type="button" onClick={onClose} className="border border-gray-300 text-gray-700 px-3 py-1 rounded">Cancel</button>
                 </div>
             </form>

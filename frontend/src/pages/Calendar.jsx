@@ -72,7 +72,7 @@ export default function Calendar() {
             <div className="md:hidden flex justify-between items-center p-4 border-b">
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="text-yellow-600 font-semibold"
+                    className="text-blue-600 font-semibold"
                 >
                     ☰ Filters
                 </button>

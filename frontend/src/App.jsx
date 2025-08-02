@@ -876,7 +876,7 @@ function App() {
 
     return (
       <div
-        className={`fixed top-26 sm:top-16 left-0 h-screen w-36 bg-white shadow-md z-50 transition-transform duration-300 ease-in-out
+        className={`fixed top-32 sm:top-16 left-0 h-screen w-36 bg-white shadow-md z-50 transition-transform duration-300 ease-in-out
           ${isMobileOpen ? "translate-x-0 z-50" : "-translate-x-full"} sm:translate-x-0`}
       >
         <div className="p-4 space-y-4">
