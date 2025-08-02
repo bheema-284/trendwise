@@ -11,10 +11,10 @@ router.get('/articles', articleController.getAllArticles);
 router.get('/articles/:slug', articleController.getSingleArticle);
 
 // POST /api/article - Create article (admin only)
-router.post('/articles', isAuthenticated, isAdmin, articleController.createArticle);
+router.post('/articles', articleController.createArticle);
 
 // POST /api/generate - Trigger ChatGPT article generation (admin only)
-router.post('/generates', isAuthenticated, isAdmin, articleController.generateArticle);
+router.post('/generates', articleController.generateArticle);
 
 // FIX: Change to ES Module default export
 export default router;

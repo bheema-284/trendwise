@@ -12,6 +12,7 @@ import SettingsPage from './pages/Settings';
 import Toast from './pages/toast';
 import Dashboard from './pages/Dashboard';
 import AdminArticleForm from './pages/Admin';
+import Comments from './pages/Comment';
 
 function App() {
   const location = useLocation();
@@ -1001,6 +1002,7 @@ function App() {
                   <Route path="/admin" element={<AdminArticleForm />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/comments" element={<Comments />} />
                 </>
               )}
             </Routes>

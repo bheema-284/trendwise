@@ -2,6 +2,7 @@
 import Article from '../models/Article.js'; // Ensure Article.js uses `export default`
 import slugify from 'slugify';
 import OpenAI from 'openai';
+import { v4 as uuidv4 } from 'uuid';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -32,30 +33,92 @@ export const getSingleArticle = async (req, res) => {
 
 // POST /api/article
 // FIX: Change `exports.createArticle` to `export const createArticle`
+
+
+
+// Generate a short description from content
+function generateDescription(content) {
+  const plain = content.replace(/<[^>]+>/g, '').trim();
+  return plain.length > 150 ? plain.slice(0, 147) + '...' : plain;
+}
+
+// Generate dummy keywords from title
+function generateKeywords(title) {
+  return title
+    .split(' ')
+    .map(word => word.replace(/[^\w]/g, '').toLowerCase())
+    .filter(Boolean)
+    .join(', ');
+}
+
+// OG description similar to meta desc
+function generateOgDescription(content) {
+  return generateDescription(content);
+}
+
+// Random HEX color for image background
+function getRandomColor() {
+  const colors = ['FF0000', '00AEEF', '8E44AD', '2ECC71', 'F39C12', '34495E'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
 export const createArticle = async (req, res) => {
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ message: 'Title and content are required' });
-  }
-
-  const newSlug = slugify(title, { lower: true, strict: true });
-
   try {
+    const { title, slug } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
+
+    const newSlug = slug?.trim() || slugify(title, { lower: true, strict: true });
+
     const existingArticle = await Article.findOne({ slug: newSlug });
     if (existingArticle) {
-      return res.status(409).json({ message: 'Article with this title already exists.' });
+      return res.status(409).json({ message: 'Article with this slug already exists.' });
     }
+
+    // Generate dummy content
+    const dummyContent = `<p>This article discusses <strong>${title}</strong> in detail, exploring the topic from multiple perspectives and offering unique insights.</p>`;
+
+    const plainText = dummyContent.replace(/<[^>]+>/g, '').slice(0, 200).trim();
+    const keywordArray = title
+      .toLowerCase()
+      .split(/\s+/)
+      .map(word => word.replace(/[^\w]/g, ''))
+      .filter(Boolean);
 
     const article = new Article({
       title,
-      content,
       slug: newSlug,
-      author: req.user._id // Assuming req.user is populated by authentication middleware
+      content: `<h1>${title}</h1>${dummyContent}`,
+      meta: {
+        description: plainText,
+        keywords: keywordArray.join(', '),
+        ogTitle: title,
+        ogImage: `https://placehold.co/600x400/000000/FFFFFF?text=${encodeURIComponent(title.split(' ')[0])}`,
+        ogDescription: plainText
+      },
+      media: [
+        {
+          type: 'image',
+          url: `https://placehold.co/800x450/${getRandomColor()}/FFFFFF?text=${encodeURIComponent(title.split(' ')[0])}`
+        },
+        {
+          type: 'video',
+          url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+        }
+      ],
+      likes: Math.floor(Math.random() * 100),
+      commentsCount: Math.floor(Math.random() * 10),
+      createdAt: new Date('2024-07-25T10:00:00.000Z'),
+      updatedAt: new Date(),
+      author: null
     });
-    const newArticle = await article.save();
-    res.status(201).json(newArticle);
+
+    const savedArticle = await article.save();
+    res.status(201).json(savedArticle);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 

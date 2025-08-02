@@ -9,8 +9,8 @@ export const googleCallback = (req, res) => {
 
     const token = jwt.sign({ user: req.user }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const frontendBase = process.env.FRONTEND_URL || 'https://trendwise-beta.vercel.app';
-    // *** Redirect directly to the frontend's /admin route ***
+    const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
+    // *** Redirect directly to the frontend's / route ***
     res.redirect(`${frontendBase}/?token=${token}&name=${encodeURIComponent(req.user.name)}&email=${encodeURIComponent(req.user.email)}`);
 };
 

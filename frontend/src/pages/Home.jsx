@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // IMPORTANT: Replace this with your deployed Render backend URL when deploying!
 // For local development, keep it as localhost.
@@ -31,7 +31,16 @@ const Home = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // State to handle errors
+  const navigate = useNavigate();
 
+  const handleCommentClick = () => {
+    navigate('/comments', {
+      state: {
+        articleId: article._id,
+        articleTitle: article.title
+      }
+    });
+  };
   useEffect(() => {
     // Fetch articles from the backend API
     axios
@@ -80,9 +89,8 @@ const Home = () => {
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
             {articles.map((article) => (
-              <Link
+              <div
                 key={article._id}
-                to={`/article/${article.slug}`}
                 className="block bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700"
               >
                 {/* Article Image */}
@@ -92,51 +100,79 @@ const Home = () => {
                       src={article.media[0].url}
                       alt={article.title}
                       className="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
-                      // Fallback for broken images
-                      onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/800x450/6B7280/FFFFFF?text=Image+Not+Found`; }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://placehold.co/800x450/6B7280/FFFFFF?text=Image+Not+Found`;
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   </div>
                 )}
 
                 <div className="p-6">
-                  {/* Article Title */}
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-                    {article.title}
-                  </h2>
+                  {/* Title wrapped in Link */}
+                  <Link to={`/article/${article.slug}`}>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight hover:underline">
+                      {article.title}
+                    </h2>
+                  </Link>
 
-                  {/* Article Description/Snippet */}
-                  {article.meta && article.meta.description && (
+                  {/* Description */}
+                  {article.meta?.description && (
                     <p className="text-gray-600 dark:text-gray-300 text-base mb-4 line-clamp-3">
                       {article.meta.description}
                     </p>
                   )}
 
-                  {/* Metadata: Date, Likes, Comments */}
+                  {/* Meta info */}
                   <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
                       {/* Date */}
                       {article.createdAt && (
                         <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                          <svg className="w-4 h-4 mr-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                           {new Date(article.createdAt).toLocaleDateString()}
                         </span>
                       )}
+
                       {/* Likes */}
                       <span className="flex items-center">
-                        <svg className="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"></path></svg>
+                        <svg className="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"></path></svg>
                         {article.likes || 0}
                       </span>
-                      {/* Comments */}
-                      <span className="flex items-center">
-                        <svg className="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.339-4.69A8.842 8.842 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clipRule="evenodd"></path></svg>
+
+                      {/* Comments (clickable to #comments) */}
+                      <button
+                        onClick={() =>
+                          navigate('/comments', {
+                            state: {
+                              articleId: article._id,
+                              articleTitle: article.title,
+                              msg: article.commentsCount
+                            }
+                          })
+                        }
+                        className="flex items-center hover:underline text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        <svg
+                          className="w-4 h-4 mr-1 text-blue-500"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.339-4.69A8.842 8.842 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
                         {article.commentsCount || 0}
-                      </span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
+
           </div>
         )}
       </div>
