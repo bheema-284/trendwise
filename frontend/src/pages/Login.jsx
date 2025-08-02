@@ -52,7 +52,7 @@ const Login = () => {
         setFormData(updatedformData);
     };
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:10000/auth/google'; // Change to deployed URL in production
+        window.location.href = 'https://trendwise-p440.onrender.com/auth/google'; // Change to deployed URL in production
     };
 
     const onSave = (e) => {
@@ -86,7 +86,7 @@ const Login = () => {
         });
         localStorage.setItem("user_details", JSON.stringify(resp.user));
         // Optional: Navigate to dashboard
-        navigate("/admin");
+        navigate("/");
     };
 
 
@@ -152,7 +152,7 @@ const Login = () => {
                 localStorage.setItem("user_details", JSON.stringify(resp.user));
                 localStorage.setItem("auth_token", token); // It's good practice to store the token separately
 
-                navigate("/admin"); // Or wherever you want to go after login
+                navigate("/"); // Or wherever you want to go after login
             } catch (err) {
                 console.error("Failed to process authentication details:", err);
                 // Optionally redirect to an error page or show a toast
