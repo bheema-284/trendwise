@@ -8,11 +8,9 @@
 
 ```
 trendwise/
-├── frontend/         # Frontend (React)
+├── frontend/        # Frontend (React)
 ├── backend/         # Backend (Node.js, Express, MongoDB)
-├── .env            # Environment variables (if in root)
-├── package.json    # Root scripts (optional)
-└── README.md       # Project documentation
+
 ```
 
 ---
