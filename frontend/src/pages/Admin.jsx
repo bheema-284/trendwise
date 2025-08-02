@@ -1143,7 +1143,7 @@ const AdminDashboard = () => {
     const xAxisDataKey = differenceInCalendarMonths(endDate, startDate) >= 3 ? 'month' : 'date';
 
     return (
-        <div className="text-gray-800 font-sans pb-6 space-y-8">
+        <div className="w-full text-gray-800 font-sans pb-6 space-y-8">
             {/* Main Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Section */}

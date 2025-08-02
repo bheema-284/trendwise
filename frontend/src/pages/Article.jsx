@@ -19,10 +19,17 @@ const Article = () => {
   if (!article) return <div>Loading...</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">{article.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: article.content }} />
+    <div className="p-6 bg-white text-gray-800 rounded-lg shadow-md dark:bg-gray-900 dark:text-gray-100 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-4">
+        {article.title}
+      </h1>
+
+      <div
+        className="prose prose-indigo max-w-none dark:prose-invert"
+        dangerouslySetInnerHTML={{ __html: article.content }}
+      />
     </div>
+
   );
 };
 

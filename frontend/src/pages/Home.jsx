@@ -11,16 +11,26 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Trending Articles</h1>
-      {articles.map(article => (
-        <div key={article._id} className="mb-2">
-          <Link to={`/article/${article.slug}`} className="text-blue-500 underline">
-            {article.title}
+    <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+        Trending Articles
+      </h1>
+
+      <div className="space-y-4">
+        {articles.map((article) => (
+          <Link
+            key={article._id}
+            to={`/article/${article.slug}`}
+            className="block p-4 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-800 transition-colors duration-200"
+          >
+            <h2 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">
+              {article.title}
+            </h2>
           </Link>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
+
   );
 };
 
