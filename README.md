@@ -1,6 +1,6 @@
 # 📊 Trendwise
 
-**Trendwise** is a full-stack web application that combines a React frontend and a Node.js/Express backend. This project is organized into separate `client` and `server` directories for ease of development and deployment.
+**Trendwise** is a full-stack web application that combines a React frontend and a Node.js/Express backend. This project is organized into separate `frontend` and `backend` directories for ease of development and deployment.
 
 ---
 
@@ -85,9 +85,12 @@ Base URL: `http://localhost:10000/api`
 
 Example endpoints:
 
-- `POST /auth/google` - Login a user
-- `GET /articles` - Fetch all users
+- `POST /auth/google` - Google OAuth login
+- `GET /articles` - Fetch all articles
+- `GET /api/article/:slug` - Fetch single article
 - `POST /articles` - Create a new article
+- `GET /api/comments/:slug` - Get comments for article
+- `POST /api/generate` - Trigger ChatGPT article generation
 
 (Modify based on your actual endpoints)
 
