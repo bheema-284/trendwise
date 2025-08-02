@@ -919,7 +919,7 @@ function App() {
   const Topbar = () => (
     <div className="flex h-26 sm:h-16 flex-wrap sm:flex-nowrap fixed top-0 left-0 w-full z-50 justify-between items-center px-4 sm:px-6 py-2 bg-white shadow-md gap-2">
       <div className="flex items-center justify-between w-full sm:w-auto">
-        <div className="w-32 h-16 cursor-pointer bg-green-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
+        <div onClick={() => navigate("/")} className="w-32 h-16 cursor-pointer bg-green-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
           <span className="text-gray-500">logo</span>
         </div>
         <button
@@ -949,7 +949,7 @@ function App() {
               {/* 👇 Larger screens: full name and role */}
               <div className="hidden sm:flex flex-col">
                 <p className="font-semibold">{rootContext?.user?.name || "User"}</p>
-                <p className="text-gray-500 text-xs">Role</p>
+                <p className="text-gray-500 text-xs">Role(admin)</p>
               </div>
             </div>
             <p className="hidden sm:block"><ChevronDownIcon className="w-4 h-4 text-gray-400" /></p>
