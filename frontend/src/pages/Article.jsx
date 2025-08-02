@@ -5,7 +5,7 @@ import axios from 'axios';
 const Article = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
-  const BASE_URL = "https://trendwise-p440.onrender.com";
+  const BASE_URL = "http://localhost:10000";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/api/articles/${slug}`)

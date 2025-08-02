@@ -155,11 +155,46 @@ export const generateArticle = async (req, res) => {
     const newSlug = slugify(generatedTitle, { lower: true, strict: true });
 
     // Save the generated article to the database
+    // const article = new Article({
+    //   title: generatedTitle,
+    //   content: generatedContent,
+    //   slug: newSlug,
+    //   author: null // Admin who triggered the generation
+    // });
+    const dummyContent = `<p>This article discusses <strong>${generatedTitle}</strong> in detail, exploring the topic from multiple perspectives and offering unique insights.</p>`;
+    const keywordArray = generatedTitle
+      .toLowerCase()
+      .split(/\s+/)
+      .map(word => word.replace(/[^\w]/g, ''))
+      .filter(Boolean);
+
+
     const article = new Article({
       title: generatedTitle,
-      content: generatedContent,
       slug: newSlug,
-      author: req.user._id // Admin who triggered the generation
+      content: `<h1>${generatedTitle}</h1>${dummyContent}`,
+      meta: {
+        description: generatedTitle,
+        keywords: keywordArray.join(', '),
+        ogTitle: generatedTitle,
+        ogImage: `https://placehold.co/600x400/000000/FFFFFF?text=${encodeURIComponent(generatedTitle.split(' ')[0])}`,
+        ogDescription: generatedTitle
+      },
+      media: [
+        {
+          type: 'image',
+          url: `https://placehold.co/800x450/${getRandomColor()}/FFFFFF?text=${encodeURIComponent(generatedTitle.split(' ')[0])}`
+        },
+        {
+          type: 'video',
+          url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+        }
+      ],
+      likes: Math.floor(Math.random() * 100),
+      commentsCount: Math.floor(Math.random() * 10),
+      createdAt: new Date('2024-07-25T10:00:00.000Z'),
+      updatedAt: new Date(),
+      author: null
     });
     const savedArticle = await article.save();
 
