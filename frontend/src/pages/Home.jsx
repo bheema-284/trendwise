@@ -4,8 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // IMPORTANT: Replace this with your deployed Render backend URL when deploying!
 // For local development, keep it as localhost.
-const BASE_URL = "http://localhost:10000";
-
+const BASE_URL = import.meta.env.VITE_API_URL;
 // Loader component for a better user experience during data fetching
 const Loader = () => {
   return (
@@ -33,14 +32,6 @@ const Home = () => {
   const [error, setError] = useState(null); // State to handle errors
   const navigate = useNavigate();
 
-  const handleCommentClick = () => {
-    navigate('/comments', {
-      state: {
-        articleId: article._id,
-        articleTitle: article.title
-      }
-    });
-  };
   useEffect(() => {
     // Fetch articles from the backend API
     axios

@@ -6,7 +6,8 @@ import { format } from 'date-fns';
 const Article = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
-  const BASE_URL = "http://localhost:10000";
+  const BASE_URL = import.meta.env.VITE_API_URL;
+  //const BASE_URL = "http://localhost:10000";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/api/articles/${slug}`)
@@ -45,7 +46,7 @@ const Article = () => {
       {/* Social preview (meta) */}
       {article.meta?.description && (
         <div className="p-4 border border-indigo-200 dark:border-indigo-700 rounded bg-indigo-50 dark:bg-indigo-900">
-          <p className="font-medium">{article.meta.ogDescription ||article. meta.description}</p>
+          <p className="font-medium">{article.meta.ogDescription || article.meta.description}</p>
           <p className="text-sm text-gray-600 dark:text-gray-400">{article.meta.keywords}</p>
         </div>
       )}
