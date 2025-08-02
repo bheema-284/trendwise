@@ -747,127 +747,94 @@ function App() {
       notification: false,
     };
   });
+  const { pathname } = useLocation();
   const [loadingParams, setLoadingParams] = useState(true);
   useEffect(() => {
-    console.log("AdminDashboard useEffect triggered. Current URL:", location.pathname + location.search);
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token');
+  const name = params.get('name');
+  const email = params.get('email');
 
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const name = params.get('name');
-    const email = params.get('email');
+  const fromQuery = token && name && email;
 
-    let userDetails = null;
-    let authToken = null;
+  const loadFromLocalStorage = () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user_details"));
+      const storedToken = localStorage.getItem("auth_token");
 
-    if (token && name && email) {
-      console.log("Found token, name, email in URL params:", { token: token.substring(0, 10) + '...', name, email });
-
-      // **Here's where you'd typically "decode" if it's a JWT payload you need to access**
-      // For example, if your backend sends a standard JWT:
-      // try {
-      //     const decoded = jwt_decode(token); // You would need to install 'jwt-decode'
-      //     console.log("Decoded JWT:", decoded);
-      //     // You might use parts of `decoded` or just the raw token
-      // } catch (e) {
-      //     console.error("Error decoding JWT:", e);
-      //     // Handle invalid token scenario
-      // }
-
-      // Assuming the 'token' from the URL is the final token you need to store:
-      userDetails = {
-        name: decodeURIComponent(name), // Decode URL-encoded characters
-        email: decodeURIComponent(email),
-        token: token, // Store the token as received
-        // Add isAdmin or other properties if they are part of your user_details object structure
-        isAdmin: true // Example: assuming admin for this dashboard
-      };
-      authToken = token;
-
-      try {
-        localStorage.setItem("user_details", JSON.stringify(userDetails));
-        localStorage.setItem("auth_token", authToken);
-        console.log("User details and auth token saved to localStorage:", userDetails);
-
-        // **Update the rootContext immediately**
+      if (storedUser && storedToken && storedUser.token === storedToken) {
         setRootContext(prev => ({
           ...prev,
           authenticated: true,
-          user: userDetails,
-          accessToken: authToken,
-          loader: false // Ensure loader is off
+          user: storedUser,
+          accessToken: storedToken,
+          loader: false,
         }));
-
-        // --- CRITICAL STEP: Clean the URL after processing parameters ---
-        // Replace the current URL with /admin so params aren't visible and user can refresh safely
-        console.log("Cleaning URL: Navigating to /admin with replace: true");
-        navigate('/admin', { replace: true });
-
-      } catch (e) {
-        console.error("Error saving to localStorage or updating context:", e);
-        // Optionally, clear localStorage and redirect to login on error
-        localStorage.clear();
-        setRootContext(prev => ({ ...prev, authenticated: false, user: null, accessToken: '', loader: false }));
-        navigate('/login');
+        return true;
       }
-      setLoadingParams(false); // Finished processing params
-      return; // Exit early to prevent checking localStorage if params were handled
+    } catch (err) {
+      console.error("Invalid localStorage data:", err);
     }
 
-    // If no token/name/email in URL, check localStorage for an existing session
-    console.log("No auth details in URL. Checking localStorage for existing session.");
-    const storedUserDetails = localStorage.getItem("user_details");
-    const storedAuthToken = localStorage.getItem("auth_token");
+    localStorage.clear();
+    setRootContext(prev => ({
+      ...prev,
+      authenticated: false,
+      user: null,
+      accessToken: '',
+      loader: false,
+    }));
+    return false;
+  };
 
-    if (storedUserDetails && storedAuthToken) {
-      try {
-        const parsedUser = JSON.parse(storedUserDetails);
-        if (parsedUser && parsedUser.token) {
-          console.log("User details found in localStorage:", parsedUser);
-          // Update rootContext with stored details
-          setRootContext(prev => ({
-            ...prev,
-            authenticated: true,
-            user: parsedUser,
-            accessToken: storedAuthToken,
-            loader: false // Ensure loader is off
-          }));
-        } else {
-          console.warn("Stored user details are incomplete or invalid. Clearing localStorage.");
-          localStorage.removeItem("user_details");
-          localStorage.removeItem("auth_token");
-          setRootContext(prev => ({ ...prev, authenticated: false, user: null, accessToken: '', loader: false }));
-          navigate('/login'); // Redirect if stored data is bad
-        }
-      } catch (e) {
-        console.error("Error parsing user details from localStorage:", e);
-        localStorage.removeItem("user_details"); // Clear corrupted data
-        localStorage.removeItem("auth_token");
-        setRootContext(prev => ({ ...prev, authenticated: false, user: null, accessToken: '', loader: false }));
-        navigate('/login'); // Redirect if data is corrupted
-      }
-    } else {
-      console.warn("No user details found in URL or localStorage. User not logged in to Admin Dashboard.");
-      // If no token in URL and no details in localStorage, user isn't authenticated for admin.
-      setRootContext(prev => ({ ...prev, authenticated: false, user: null, accessToken: '', loader: false }));
-      // Optionally redirect to login if you want to force login for direct /admin access
-      // navigate('/login');
+  const saveFromQueryParams = () => {
+    const userDetails = {
+      name: decodeURIComponent(name),
+      email: decodeURIComponent(email),
+      token,
+      isAdmin: true,
+    };
+
+    try {
+      localStorage.setItem("user_details", JSON.stringify(userDetails));
+      localStorage.setItem("auth_token", token);
+
+      setRootContext(prev => ({
+        ...prev,
+        authenticated: true,
+        user: userDetails,
+        accessToken: token,
+        loader: false,
+      }));
+
+      console.log("User authenticated via URL params. Cleaning URL...");
+      navigate('/admin', { replace: true });
+      return true;
+    } catch (err) {
+      console.error("Error saving user from URL params:", err);
+      localStorage.clear();
+      setRootContext(prev => ({
+        ...prev,
+        authenticated: false,
+        user: null,
+        accessToken: '',
+        loader: false,
+      }));
+      return false;
     }
-    setLoadingParams(false); // Finished checking localStorage
-  }, [location.search, navigate, setRootContext]); // Add setRootContext to dependencies
-  const { pathname } = useLocation();
-  useEffect(() => {
-    const user_details = typeof window !== "undefined" && JSON.parse(localStorage.getItem("user_details"));
-    const updatedContext = { ...rootContext, loader: false };
+  };
 
-    if (user_details) {
-      updatedContext.authenticated = true;
-      updatedContext.user = user_details;
-    } else {
-      updatedContext.authenticated = false;
-    }
+  const authenticated = fromQuery ? saveFromQueryParams() : loadFromLocalStorage();
 
-    setRootContext(updatedContext);
-  }, [pathname]);
+  if (!authenticated) {
+    console.warn("User not authenticated. Redirecting to login...");
+    navigate('/login');
+  }
+
+  setLoadingParams(false);
+}, [location.search, pathname, navigate, setRootContext]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -1008,7 +975,7 @@ function App() {
       </div>
     );
   }
-  console.log("rootContext", rootContext)
+ 
   return (
     <RootContext.Provider value={{ rootContext, setRootContext }}>
       <div className="antialiased">
